@@ -125,7 +125,10 @@ define('views/record/detail', ['views/record/base', 'view-record-helper'], funct
         events: {
             'click .button-container .action': function (e) {
                 Espo.Utils.handleAction(this, e);
-            }
+            },
+            'click [data-action="showMoreDetailPanels"]': function () {
+                this.showMoreDetailPanels();
+            },
         },
 
         actionEdit: function () {
@@ -1470,6 +1473,14 @@ define('views/record/detail', ['views/record/base', 'view-record-helper'], funct
                     }
                 }
 
+                if (simplifiedLayout[p].hidden) {
+                    panel.hidden = true;
+                    panel.name = panel.name || 'panel-' + p.toString();
+                    this.hidePanel(panel.name);
+                    this.underShowMoreDetailPanelList = this.underShowMoreDetailPanelList || [];
+                    this.underShowMoreDetailPanelList.push(panel.name);
+                }
+
                 var lType = 'rows';
                 if (simplifiedLayout[p].columns) {
                     lType = 'columns';
@@ -1793,6 +1804,13 @@ define('views/record/detail', ['views/record/base', 'view-record-helper'], funct
 
         unblockUpdateWebSocket: function () {
             this.updateWebSocketIsBlocked = false;
+        },
+
+        showMoreDetailPanels: function () {
+            this.hidePanel('showMoreDelimiter');
+            this.underShowMoreDetailPanelList.forEach(function (item) {
+                this.showPanel(item)
+            }, this);
         },
 
     });
